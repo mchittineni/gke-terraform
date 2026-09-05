@@ -1,14 +1,13 @@
 name: "Terraform Validate & Security"
 
 on:
-  push:
-    branches:
-      - main
-      - feat/*
-      - fix/*
+  # push:
+  #   branches:
+  #     - main
+  #     - feat/*
+  #     - fix/*
   pull_request:
-    branches:
-      - main
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
@@ -29,7 +28,7 @@ jobs:
           terraform_version: "1.16.1"
 
       - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@88510804473335508a8e18dbcf2f7c00e1236fb6 # v4.1.1
+        uses: terraform-linters/setup-tflint@1cf010d3c7aef302051ccdb68c14c5dc2efa34ef #v6.3.1
         with:
           tflint_version: "v0.55.0"
 
@@ -51,7 +50,7 @@ jobs:
           tflint --recursive -f json > tflint-report.json || true
 
       - name: Run Checkov Security Scan
-        uses: bridgecrewio/checkov-action@51ec12822a16d0046b0a1be8269d0859ef098c46 # v12.1347.0
+        uses: bridgecrewio/checkov-action@99bb2caf247dfd9f03cf984373bc6043d4e32ebf #v12.1347.0
         with:
           framework: terraform
           soft_fail: true

@@ -1,9 +1,15 @@
 name: "Terraform Apply"
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy (dev, staging, prod)"
+        required: true
+        default: "dev"
 
 permissions:
   id-token: write
