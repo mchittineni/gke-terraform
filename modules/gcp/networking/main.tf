@@ -1,13 +1,3 @@
-locals {
-  labels = merge(
-    {
-      environment = var.environment
-      project     = var.project_name
-      component   = "networking"
-    },
-    var.labels
-  )
-}
 
 resource "google_compute_network" "this" {
   name                            = var.network_name
