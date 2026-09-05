@@ -54,9 +54,6 @@ module "gcp_networking" {
   region       = var.gcp_region
   network_name = "${var.project_name}-${var.environment}-vpc"
   subnet_cidr  = var.gcp_subnet_cidr
-  environment  = var.environment
-  project_name = var.project_name
-  labels       = local.common_labels
 }
 
 # Module for provisioning GKE VPC-native Cluster and Node Pools with Workload Identity.
