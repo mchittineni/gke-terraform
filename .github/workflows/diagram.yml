@@ -2,10 +2,10 @@ name: "Generate Architecture Diagram"
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "**/*.tf"
-      - "!docs/**"
+  # push:
+  #   paths:
+  #     - "**/*.tf"
+  #     - "!docs/**"
 
 permissions:
   contents: write

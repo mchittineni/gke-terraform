@@ -1,9 +1,14 @@
 name: "Terraform Plan & Diagram"
 
 on:
-  pull_request:
-    branches:
-      - main
+  # pull_request:
+  #   types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to plan (dev, staging, prod)"
+        required: true
+        default: "dev"
 
 permissions:
   id-token: write
