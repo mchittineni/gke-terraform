@@ -44,6 +44,8 @@ resource "google_storage_bucket" "backups" {
   force_destroy = false
   storage_class = "STANDARD"
 
+  uniform_bucket_level_access = true
+
   versioning {
     enabled = true
   }
@@ -79,6 +81,7 @@ resource "google_sql_database_instance" "this" {
     ip_configuration {
       ipv4_enabled                                  = false
       private_network                               = var.network_id
+      require_ssl                                   = true
       enable_private_path_for_google_cloud_services = true
     }
 

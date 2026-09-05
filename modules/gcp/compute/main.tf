@@ -107,6 +107,7 @@ resource "google_container_node_pool" "primary" {
   node_config {
     service_account = google_service_account.nodes.email
     machine_type    = var.machine_type
+    image_type      = "COS_CONTAINERD"
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
