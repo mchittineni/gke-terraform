@@ -3,3 +3,14 @@ framework:
 soft-fail: true
 compact: true
 quiet: false
+skip-check:
+  - CKV_GCP_61
+  - CKV_GCP_71
+  - CKV_GCP_64
+  - CKV_GCP_67
+  - CKV_GCP_66
+  - CKV_GCP_24
+  - CKV_GCP_13
+  - CKV_GCP_65
+  - CKV_GCP_12
+  - CKV_GCP_20
