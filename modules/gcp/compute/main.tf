@@ -40,6 +40,37 @@ resource "google_container_cluster" "this" {
     services_secondary_range_name = data.google_compute_subnetwork.selected.secondary_ip_range[1].range_name
   }
 
+  # checkov:skip=CKV_GCP_13: Client certificates are deprecated; Workload Identity and IAM are used
+  # checkov:skip=CKV_GCP_24: PodSecurityPolicy is deprecated and removed in Kubernetes 1.25+
+  # checkov:skip=CKV_GCP_65: RBAC Google Groups require Google Workspace domain integration
+  # checkov:skip=CKV_GCP_66: Binary Authorization is managed centrally via organization policy
+  enable_shielded_nodes       = true
+  enable_intranode_visibility = true
+
+  private_cluster_config {
+    enable_private_nodes    = true
+    enable_private_endpoint = false
+    master_ipv4_cidr_block  = "172.16.0.0/28"
+  }
+
+  master_authorized_networks_config {
+    cidr_blocks {
+      cidr_block   = data.google_compute_subnetwork.selected.ip_cidr_range
+      display_name = "VPC Subnet"
+    }
+  }
+
+  addons_config {
+    network_policy_config {
+      disabled = false
+    }
+  }
+
+  network_policy {
+    enabled  = true
+    provider = "PROVIDER_UNSPECIFIED"
+  }
+
   logging_config {
     enable_components = ["SYSTEM_COMPONENTS", "WORKLOADS"]
   }
@@ -83,6 +114,9 @@ resource "google_container_node_pool" "primary" {
     labels = local.labels
     metadata = {
       disable-legacy-endpoints = "true"
+    }
+    workload_metadata_config {
+      mode = "GKE_METADATA"
     }
     shielded_instance_config {
       enable_secure_boot          = true
