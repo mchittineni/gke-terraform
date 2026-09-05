@@ -1,0 +1,26 @@
+# General Project Configuration
+project_name = "cloud-platform"
+environment  = "dev"
+owner_email  = "platform-team@example.com"
+
+# Google Cloud Configuration
+gcp_project_id = "my-gcp-project-id"
+gcp_region     = "us-central1"
+
+# Networking
+gcp_subnet_cidr = "10.10.0.0/20"
+
+# GKE Compute
+gke_release_channel = "REGULAR"
+gcp_machine_type    = "e2-standard-4"
+gcp_node_count      = 2
+
+# Cloud SQL Database
+gcp_db_name              = "appdb"
+gcp_db_version           = "POSTGRES_16"
+gcp_db_tier              = "db-custom-2-7680"
+gcp_db_availability_type = "ZONAL"
+
+# Monitoring
+enable_monitoring = true
+alert_email       = "alerts@example.com"

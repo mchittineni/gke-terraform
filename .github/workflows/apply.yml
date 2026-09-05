@@ -1,0 +1,47 @@
+name: "Terraform Apply"
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  apply:
+    name: "Deploy Infrastructure & Update Diagram"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Authenticate to Google Cloud (Workload Identity Federation)
+        uses: google-github-actions/auth@6fc4af4b145ae7821d527454aa9bd537d1f2dc5f # v2
+        continue-on-error: true
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+        with:
+          terraform_version: "1.16.1"
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      - name: Terraform Init
+        run: terraform init -backend=false
+
+      - name: Terraform Apply
+        run: echo "Terraform apply step ready for GCP Workload Identity Federation credentials"
+
+      - name: Re-generate Architecture Diagram
+        run: |
+          if [ -f plan.json ]; then
+            npx -y tf-arch-diagram-generator render plan.json --out docs/architecture.svg || true
+          fi

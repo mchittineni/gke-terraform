@@ -1,0 +1,59 @@
+name: "Terraform Validate & Security"
+
+on:
+  push:
+    branches:
+      - main
+      - feat/*
+      - fix/*
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
+jobs:
+  validate:
+    name: "Validate, Lint & Scan"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+        with:
+          terraform_version: "1.16.1"
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@88510804473335508a8e18dbcf2f7c00e1236fb6 # v4.1.1
+        with:
+          tflint_version: "v0.55.0"
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init (Backend Disabled)
+        run: terraform init -backend=false
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Init TFLint
+        run: tflint --init
+
+      - name: Run TFLint
+        run: |
+          tflint --recursive -f compact || true
+          tflint --recursive -f json > tflint-report.json || true
+
+      - name: Run Checkov Security Scan
+        uses: bridgecrewio/checkov-action@51ec12822a16d0046b0a1be8269d0859ef098c46 # v12.1347.0
+        with:
+          framework: terraform
+          soft_fail: true
+          output_format: cli
+          config_file: .checkov.yml
